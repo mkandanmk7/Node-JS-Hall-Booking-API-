@@ -39,6 +39,10 @@ const rooms = [
     ],
   },
 ];
+//common call api status
+app.get("/", (req, res) => {
+  res.status(200).send("Server is running successfully ");
+});
 
 //create room
 app.post("/createRoom", (req, res) => {
