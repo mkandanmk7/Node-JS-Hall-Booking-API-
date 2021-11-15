@@ -53,6 +53,72 @@ app.post("/createRoom", (req, res) => {
   res.status(200).send("Room Created");
 });
 
+//Book rooms
+app.post("/bookRoom", (req, res, next) => {
+  for (let i = 0; i < rooms.length; i++) {
+    console.log("a");
+    if (!(rooms[i].roomId === req.body.roomId)) {
+      return res.status(400).send({ error: "Invalid" });
+    } else {
+      let booking = {
+        customerName: req.body.name,
+        date: new Date(req.body.date),
+        start: req.body.start,
+        end: req.body.end,
+        status: "confirmed",
+      };
+      let result = undefined;
+      rooms[i].bookingDetails.forEach((book) => {
+        if (
+          book.date.getTime() == booking.date.getTime() &&
+          book.start === booking.start
+        ) {
+          result = 0;
+          console.log("in booking");
+          //  return res.status(400).send({error:"Please select different time slot"})
+        } else {
+          result = 1;
+          rooms[i].bookingDetails.push(booking);
+          // return res.status(200).send("Booking confirmed")
+        }
+      });
+      if (result) return res.status(200).send("Booking confirmed");
+      else
+        return res
+          .status(400)
+          .send({ error: "Please select different time slot" });
+    }
+  }
+});
+
+//list customers
+
+app.get("/listCustomer", (req, res) => {
+  let customerArray = [];
+
+  rooms.forEach((room) => {
+    let customerObj = { roomName: room.name };
+
+    room.bookingDetails.forEach((customer) => {
+      customerObj.customerName = customer.customerName;
+      customerObj.date = customer.date;
+      customerObj.start = customer.start;
+      customerObj.end = customer.end;
+
+      customerArray.push(customerObj);
+    });
+  });
+
+  res.send(customerArray);
+});
+
+//get rooms
+
+app.get("/listRooms", (req, res) => {
+  console.log("list rooms");
+  res.status(200).send(rooms);
+});
+
 app.get("/", (req, res) => {
   console.log("server is running successfully");
 });
