@@ -40,6 +40,19 @@ const rooms = [
   },
 ];
 
+//create room
+app.post("/createRoom", (req, res) => {
+  rooms.push({
+    name: req.body.name,
+    seats: req.body.seats,
+    amenities: req.body.amenities,
+    price: req.body.price,
+    roomId: "ghi",
+    bookingDetails: [{}],
+  });
+  res.status(200).send("Room Created");
+});
+
 app.get("/", (req, res) => {
   console.log("server is running successfully");
 });
